@@ -140,42 +140,27 @@
                         <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Company name</label>
                         <input type="text" name="companyName" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., XYZ Inc.">
                     </div>
-                    @error ('companyName')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <div class="mb-4">
                         <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">Company address</label>
                         <input type="text" name="companyAdd" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., 123 Main St, City, Country">
                     </div>
-                    @error ('companyAdd')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <div class="mb-4">
                         <label for="rep_name" class="block text-sm font-medium text-gray-700 mb-1">Company representative's name</label>
                         <input type="text" name="repName" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., John Doe">
                     </div>
-                    @error ('repName')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <div class="mb-4">
                         <label for="rep_email" class="block text-sm font-medium text-gray-700 mb-1">Company representative's email</label>
                         <input type="email" name="repEmail" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., xyz@email.com">
                     </div>
-                    @error ('repEmail')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <div class="mb-4">
                         <label for="team_email" class="block text-sm font-medium text-gray-700 mb-1">Team's email</label>
                         <input type="email" name="teamEmail" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., abc@email.com">
                     </div>
-                    @error ('teamEmail')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <p class="text-gray-800 mb-8">Please note, corporate documentation and an identity document of the representative will be required if it passes at the preliminary review.</p>
 
                     <!-- Navigation within the form (Optional) -->
                     <div class="flex justify-end pt-4 border-t">
-                        <button type="button" @click="activeTab = 'pricing'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="activeTab = 'basic'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Basic Information &rarr;
                         </button>
                     </div>
@@ -189,30 +174,18 @@
                         <label for="project_name" class="block text-sm font-medium text-gray-700 mb-1">Project name</label>
                         <input type="text" name="projectName" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., XYZ">
                     </div>
-                    @error ('projectName')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <div class="mb-4">
                         <label for="project_intro" class="block text-sm font-medium text-gray-700 mb-1">Brief summary of the project</label>
-                        <textarea name="projectIntro" rows="4" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Describe the project briefly..."></textarea>
+                        <textarea name="projectIntro" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Describe the project briefly..."></textarea>
                     </div>
-                    @error ('projectIntro')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <div class="mb-4">
                         <label for="project_website" class="block text-sm font-medium text-gray-700 mb-1">Project's official website</label>
                         <input type="url" name="projectWebsite" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., https://www.xyz.com">
                     </div>
-                    @error ('projectWebsite')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
                     <div class="mb-4">
                         <label for="project_whitepaper" class="block text-sm font-medium text-gray-700 mb-1">Weblink to project's whitepaper</label>
                         <input type="url" name="projectWhitepaper" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., https://www.xyz.com/whitepaper">
                     </div>
-                    @error ('projectWhitepaper')
-                        <div class="text-red-500 text-xs">{{ $message }}</div>
-                    @enderror
 
                     <!-- Navigation within the form -->
                     <div class="flex justify-between pt-4 border-t">
@@ -309,68 +282,253 @@
                             Next: Project Introduction &rarr;
                         </button>
                     </div>
+                </div>
 
-                    <!-- Tab Pane 4: Project Introduction -->
-                    <div x-show="activeTab === 'company'" x-cloak>
-                        <h3 class="text-lg font-semibold mb-4 text-gray-700">Project Introduction</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="mb-4">
-                                <label for="token_rule" class="block text-sm font-medium text-gray-700 mb-1">Token lockup and release rule</label>
-                                <textarea name="tokenRule" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Please specify the token’s lockup and release rule"></textarea>
-                            </div>
-                            <div class="mb-4">
-                                <label for="sales_det" class="block text-sm font-medium text-gray-700 mb-1">Sale phases, time, amount, and prices</label>
-                                <textarea name="salesDet" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide the sale phases and their time, amount, and price respectively"></textarea>
-                            </div>
+                <!-- Tab Pane 4: Project Introduction -->
+                <div x-show="activeTab === 'project'" x-cloak>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Project Introduction</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="track_rec" class="block text-sm font-medium text-gray-700 mb-1">Team's track-record in the relevant inductry</label>
+                            <textarea name="trackRec" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the track record of the team in this industry?"></textarea>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="mb-4">
-                                <label for="token_rule" class="block text-sm font-medium text-gray-700 mb-1">Token lockup and release rule</label>
-                                <textarea name="tokenRule" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Please specify the token’s lockup and release rule"></textarea>
-                            </div>
-                            <div class="mb-4">
-                                <label for="sales_det" class="block text-sm font-medium text-gray-700 mb-1">Sale phases, time, amount, and prices</label>
-                                <textarea name="salesDet" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide the sale phases and their time, amount, and price respectively"></textarea>
-                            </div>
+                        <div class="mb-4">
+                            <label for="outstanding_feat" class="block text-sm font-medium text-gray-700 mb-1">Project's outstanding feat</label>
+                            <textarea name="outstandingFeat" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What makes the project outstanding?"></textarea>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="mb-4">
-                                <label for="token_rule" class="block text-sm font-medium text-gray-700 mb-1">Token lockup and release rule</label>
-                                <textarea name="tokenRule" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Please specify the token’s lockup and release rule"></textarea>
-                            </div>
-                            <div class="mb-4">
-                                <label for="sales_det" class="block text-sm font-medium text-gray-700 mb-1">Sale phases, time, amount, and prices</label>
-                                <textarea name="salesDet" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide the sale phases and their time, amount, and price respectively"></textarea>
-                            </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="target" class="block text-sm font-medium text-gray-700 mb-1">Project's target</label>
+                            <textarea name="target" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the project's target and vision?"></textarea>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="mb-4">
-                                <label for="token_rule" class="block text-sm font-medium text-gray-700 mb-1">Token lockup and release rule</label>
-                                <textarea name="tokenRule" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Please specify the token’s lockup and release rule"></textarea>
-                            </div>
-                            <div class="mb-4">
-                                <label for="sales_det" class="block text-sm font-medium text-gray-700 mb-1">Sale phases, time, amount, and prices</label>
-                                <textarea name="salesDet" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide the sale phases and their time, amount, and price respectively"></textarea>
-                            </div>
+                        <div class="mb-4">
+                            <label for="technical_fw" class="block text-sm font-medium text-gray-700 mb-1">Technical framework of the project</label>
+                            <textarea name="technicalFW" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Give the technical framework of this project"></textarea>
                         </div>
-
-                        <!-- Navigation within the form (Optional) -->
-                        <div class="flex justify-end pt-4 border-t">
-                            <button type="button" @click="activeTab = 'pricing'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
-                                Next: Basic Information &rarr;
-                            </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="innovative_tech" class="block text-sm font-medium text-gray-700 mb-1">Technological innovation</label>
+                            <textarea name="innovativeTech" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the project innovating technologically?"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">Implementation difficulty</label>
+                            <textarea name="difficulty" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Point out the difficulty with immplementing this technology?"></textarea>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="proposed_sol" class="block text-sm font-medium text-gray-700 mb-1">Proposed solution</label>
+                            <textarea name="proposedSol" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the solution proposed by this project?"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="opensource" class="block text-sm font-medium text-gray-700 mb-1">Is the project opensource?</label>
+                            <textarea name="opensource" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Is the project open sourced? If it is, when?"></textarea>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="competitors" class="block text-sm font-medium text-gray-700 mb-1">Competitors</label>
+                            <textarea name="competitors" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Who are the project's competitors in your opinion?"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="superior_feat" class="block text-sm font-medium text-gray-700 mb-1">Competitive advantage</label>
+                            <textarea name="superiorFeat" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What make your project superior to your peer competitors in the same niche?"></textarea>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="ecosystem" class="block text-sm font-medium text-gray-700 mb-1">Ecosystem products</label>
+                            <textarea name="ecosystem" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="List what have been built successfully in your ecosystem"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="project_use" class="block text-sm font-medium text-gray-700 mb-1">Project's usecase(s)</label>
+                            <textarea name="projectUse" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Please give the use cases of this project?"></textarea>
                         </div>
                     </div>
 
+                    <!-- Navigation within the form -->
+                    <div class="flex justify-between pt-4 border-t">
+                        <button type="button" @click="activeTab = 'token'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
+                            &larr; Previous: Token Information
+                        </button>
+                        <button type="button" @click="activeTab = 'project-dev'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                            Next: Project Development &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Pane 5: Project Development -->
+                <div x-show="activeTab === 'project-dev'" x-cloak>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Project Development</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="code_library" class="block text-sm font-medium text-gray-700 mb-1">Link to the project's code library</label>
+                            <input type="url" name="codeLibrary" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., https://github.com/code">
+                        </div>
+                        <div class="mb-4">
+                            <label for="roadmap" class="block text-sm font-medium text-gray-700 mb-1">Link to the project's roadmap</label>
+                            <input type="url" name="roadmap" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., https://xyz.com/roadmap">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="network_cond" class="block text-sm font-medium text-gray-700 mb-1">Network condition</label>
+                            <textarea name="networkCond" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is its network condition currently?"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="func_modeules" class="block text-sm font-medium text-gray-700 mb-1">Functional modules development</label>
+                            <textarea name="funcModules" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="How is the development of the main functional modules going?"></textarea>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="implementation" class="block text-sm font-medium text-gray-700 mb-1">Project's implementation</label>
+                            <textarea name="implementation" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="How is the project's implementation going so far?"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="ecosystem_dev" class="block text-sm font-medium text-gray-700 mb-1">Ecosystem development</label>
+                            <textarea name="ecosystemDev" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the development level of the project's ecosystem?"></textarea>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="current_phase" class="block text-sm font-medium text-gray-700 mb-1">Current development phase</label>
+                            <input type="text" name="currentPhase" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="At which phase on the road-map the project currently is?">
+                        </div>
+                        <div class="mb-4">
+                            <label for="dev_venue" class="block text-sm font-medium text-gray-700 mb-1">Development Venue</label>
+                            <textarea name="devVenue" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide details of additional issuance and how you plan to execute it"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Navigation within the form -->
+                    <div class="flex justify-between pt-4 border-t">
+                        <button type="button" @click="activeTab = 'project'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
+                            &larr; Previous: Project Introduction
+                        </button>
+                        <button type="button" @click="activeTab = 'team'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                            Next: Team Introduction &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Pane 6: Team Introduction -->
+                <div x-show="activeTab === 'team'" x-cloak>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Team Introduction</h3>
+
+                    <div class="mb-4">
+                        <label for="team_intro" class="block text-sm font-medium text-gray-700 mb-1">Project's team</label>
+                        <textarea name="teamIntro" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Give a brief introduction to the project's team"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="core_members" class="block text-sm font-medium text-gray-700 mb-1">Core members</label>
+                        <textarea name="coreMembers" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Profiles of the project's core members"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="consultant_prof" class="block text-sm font-medium text-gray-700 mb-1">Consultant(s) profile</label>
+                        <textarea name="consultantProf" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Profile of the project's consultant(s)"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="investors" class="block text-sm font-medium text-gray-700 mb-1">Institutional investors</label>
+                        <textarea name="investors" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Who are the project's institutional investors"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="commercial_partners" class="block text-sm font-medium text-gray-700 mb-1">Commercial partners</label>
+                        <textarea name="commercialPartners" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Please name the project's commercial partners"></textarea>
+                    </div>
+
+                    <!-- Navigation within the form -->
+                    <div class="flex justify-between pt-4 border-t">
+                        <button type="button" @click="activeTab = 'project-dev'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
+                            &larr; Previous: Project Development
+                        </button>
+                        <button type="button" @click="activeTab = 'business'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                            Next: Business Development Plan &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Pane 7: Business Development Plan -->
+                <div x-show="activeTab === 'business'" x-cloak>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Business Marketing Plan</h3>
+
+                    <div class="mb-4">
+                        <label for="community_info" class="block text-sm font-medium text-gray-700 mb-1">Community Information</label>
+                        <textarea name="communityInfo" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Give the brief detail about the project's community"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="marketing_ch" class="block text-sm font-medium text-gray-700 mb-1">Markting Channel(s)</label>
+                        <textarea name="marketingCh" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What are your marketing channels currently?"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="marketing_camp" class="block text-sm font-medium text-gray-700 mb-1">Marketing Campaigns</label>
+                        <textarea name="marketingCamp" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide the marketing campaigns before and after exchange listing"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="budget" class="block text-sm font-medium text-gray-700 mb-1">Campaign Budget</label>
+                        <textarea name="budget" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the budget for campaigns before and after exchange listing"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="marketing_plans" class="block text-sm font-medium text-gray-700 mb-1">Project's team</label>
+                        <textarea name="marketingPlans" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Please describe the detailed marketing plan"></textarea>
+                    </div>
+
+                    <!-- Navigation within the form -->
+                    <div class="flex justify-between pt-4 border-t">
+                        <button type="button" @click="activeTab = 'team'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
+                            &larr; Previous: Team Introduction
+                        </button>
+                        <button type="button" @click="activeTab = 'fee'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                            Next: Evaluation/Review Fee &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Pane 8: Evaluation/Review Fee -->
+                <div x-show="activeTab === 'fee'" x-cloak>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Evaluation/Review Fee</h3>
+
+                    <div class="mb-4">
+                        <p>
+                            Our standard evaluation/review fee is 2,000 USDT, which covers the comprehensive assessment of your project by our expert team. 
+                            This fee includes technical evaluation, market analysis, and strategic recommendations to enhance your project's potential for success. 
+                            Please ensure that the payment is made prior to the submision of this application form.
+                        </p>
+                        <p>
+                            This fee is <b>refundable</b> if the project fails to advance from this stage. 
+                            Projects that passes review move to the next phase of the pre-listing process. 
+                            Please do not reapply (except for another project) if this project fails to advance from this stage.
+                        </p>
+                    </div>
+                    <div class="mb-4">
+                        <p>
+                            Please make the payment of 2,000 USDT to the following USDT address on <b>TRON (TRC-20) Network,</b> attach screenshot / receipt of payment below :
+                            <br>
+                            <b>TCGkeLkwQk935HxMkVxvf2d1gS7VJLU6sL</b>
+                        </p>
+                    </div>
+                    <div class="mb-4">
+                        <span>Upload screenshot / receipt of payment</span>
+                        <input type="file" required name="receipt" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="*Please attach the payment reciept"/>
+                    </div>
+                    <div class="mb-4">
+                        <label for="budget" class="block text-sm font-medium text-gray-700 mb-1">Provide your USDT address should there be a case of refund (TRC-20)</label>
+                        <input type="text" name="refAddress" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Trc-20 USDT address for refund if applicable"/>
+                    </div>
+                    
+
                     <!-- Final Submission Button -->
                     <div class="flex justify-between pt-4 border-t">
-                        <button type="button" @click="activeTab = 'pricing'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
-                            &larr; Previous: Pricing & Inventory
+                        <button type="button" @click="activeTab = 'business'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
+                            &larr; Previous: Business Development Plan
                         </button>
                         <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-xl transition duration-150 transform hover:scale-[1.02]">
                             <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            Save All Product Data
+                            Save and Submit Application
                         </button>
                     </div>
                 </div>
