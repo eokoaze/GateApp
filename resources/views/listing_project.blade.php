@@ -290,7 +290,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="mb-4">
-                            <label for="track_rec" class="block text-sm font-medium text-gray-700 mb-1">Team's track-record in the relevant inductry</label>
+                            <label for="track_rec" class="block text-sm font-medium text-gray-700 mb-1">Team's track-record in the relevant industry</label>
                             <textarea name="trackRec" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the track record of the team in this industry?"></textarea>
                         </div>
                         <div class="mb-4">

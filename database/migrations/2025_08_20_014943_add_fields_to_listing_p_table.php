@@ -13,7 +13,7 @@ class AddFieldsToListingPTable extends Migration
             $table->string('projDesc')->nullable();
             $table->string('projURL')->nullable();
             $table->string('projWhitepaper')->nullable();
-            $table->string('tokenENname')->nullable();
+            $table->string('tokenName')->nullable();
             $table->string('tokenSymbol')->nullable();
             $table->string('tokenSupply')->nullable();
             $table->string('tokenType')->nullable();
