@@ -59,7 +59,8 @@
         @endif
 
         <!-- The ENTIRE form, including all tab contents, is wrapped in a single <form> tag -->
-        <form action="/api/save-product" method="POST">
+        <form action="/newlisting_p" method="POST" enctype="multipart/form-data">
+            @csrf
             
             <!-- 1. TAB NAVIGATION (Nav-Tabs equivalent) -->
             <div class="border-b border-gray-200 mb-8">
@@ -269,7 +270,7 @@
                         </div>
                         <div class="mb-4">
                             <label for="additional_iss" class="block text-sm font-medium text-gray-700 mb-1">Will there be additional issuance, how?</label>
-                            <textarea name="addtionalIss" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide details of additional issuance and how you plan to execute it"></textarea>
+                            <textarea name="additionalIss" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide details of additional issuance and how you plan to execute it"></textarea>
                         </div>
                     </div>
 
@@ -290,7 +291,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="mb-4">
-                            <label for="track_rec" class="block text-sm font-medium text-gray-700 mb-1">Team's track-record in the relevant industry</label>
+                            <label for="track_rec" class="block text-sm font-medium text-gray-700 mb-1">Team's track-record in the relevant indusgittry</label>
                             <textarea name="trackRec" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What is the track record of the team in this industry?"></textarea>
                         </div>
                         <div class="mb-4">

@@ -31,9 +31,9 @@
     </nav>
     <!--end navbar-->
 
-    <div class="bg-animate flex justify-center p-5">
-        <div class="mx-10 mt-10 border-0 border-blue-400 rounded-lg">
-            <div class="mt-8 mb-4 text-center text-xl ont-bold">Individual Applications</div>
+    <div class="bg-animate flex flex-col items-center p-5 gap-8">
+        <div class="w-full max-w-6xl border-0 border-blue-400 rounded-lg">
+            <div class="mt-8 mb-4 text-center text-xl font-bold">Individual Applications</div>
 
                 <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
                     <thead class="bg-gray-50">
@@ -74,9 +74,30 @@
                 {{ $applicationI->onEachSide(4)->links() }}
         </div>
 
-        <div class="mx-10 mt-10 border-0 border-blue-400 rounded-lg">
-            <div class="mt-8 mb-4 text-center text-xl ont-bold">Team/Project Applications</div>
+        <div class="w-full max-w-6xl border-0 border-blue-400 rounded-lg">
+            <div class="mt-8 mb-4 text-center text-xl font-bold">Team/Project Applications</div>
 
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex flex-wrap gap-4 justify-center" aria-label="Project Tabs">
+                        <button data-tab="project-overview" class="project-tab whitespace-nowrap py-2 px-3 border-b-2 font-medium text-sm border-blue-600 text-blue-600">
+                            Overview
+                        </button>
+                        <button data-tab="project-token" class="project-tab whitespace-nowrap py-2 px-3 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-blue-600 hover:border-blue-300">
+                            Token & Economics
+                        </button>
+                        <button data-tab="project-team" class="project-tab whitespace-nowrap py-2 px-3 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-blue-600 hover:border-blue-300">
+                            Team & Business
+                        </button>
+                        <button data-tab="project-dev" class="project-tab whitespace-nowrap py-2 px-3 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-blue-600 hover:border-blue-300">
+                            Development
+                        </button>
+                        <button data-tab="project-fee" class="project-tab whitespace-nowrap py-2 px-3 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-blue-600 hover:border-blue-300">
+                            Fee & Refund
+                        </button>
+                    </nav>
+                </div>
+
+                <div id="project-overview" class="project-panel">
                 <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
                     <thead class="bg-gray-50">
                         <tr>
@@ -84,7 +105,16 @@
                                 companyName
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                repName
+                                projectName
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                tokenName
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                coinSymbol
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                projectWebsite
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 repEmail || teamEmail
@@ -102,10 +132,19 @@
                                 {{ $applicationPs->companyName }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ $applicationPs->repName }}
+                                {{ $applicationPs->projectName }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $applicationPs->tokenName }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $applicationPs->repName.'||'.$applicationPs->teamEmail }} 
+                                {{ $applicationPs->coinSymbol }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $applicationPs->projectWebsite }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $applicationPs->repEmail.'||'.$applicationPs->teamEmail }} 
                             </td>                            
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ Carbon\Carbon::parse($applicationPs->created_at)->diffForHumans() }} 
@@ -114,10 +153,198 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
+
+                <div id="project-token" class="project-panel hidden">
+                <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                projectName
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                totalSupply
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                coinType
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                contractAdd
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                blockExpl
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($applicationP as $applicationPs)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $applicationPs->projectName }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $applicationPs->totalSupply }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $applicationPs->coinType }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $applicationPs->contractAdd }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $applicationPs->blockExpl }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                </div>
+
+                <div id="project-team" class="project-panel hidden">
+                <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                projectName
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                teamIntro
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                coreMembers
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                communityInfo
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                marketingPlans
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($applicationP as $applicationPs)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $applicationPs->projectName }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->teamIntro }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->coreMembers }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->communityInfo }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->marketingPlans }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                </div>
+
+                <div id="project-dev" class="project-panel hidden">
+                <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                projectName
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                codeLibrary
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                roadmap
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                currentPhase
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                devVenue
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($applicationP as $applicationPs)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $applicationPs->projectName }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->codeLibrary }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->roadmap }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->currentPhase }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->devVenue }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                </div>
+
+                <div id="project-fee" class="project-panel hidden">
+                <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                projectName
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                receiptPath
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                refAddress
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($applicationP as $applicationPs)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $applicationPs->projectName }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->receiptPath }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $applicationPs->refAddress }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                </div>
+
                 {{ $applicationP->onEachSide(4)->links() }}
         </div>  
     </div>
 
+    <script>
+        const tabs = document.querySelectorAll('.project-tab');
+        const panels = document.querySelectorAll('.project-panel');
+        tabs.forEach((tab) => {
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-tab');
+                tabs.forEach((btn) => {
+                    btn.classList.remove('border-blue-600', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+                tab.classList.add('border-blue-600', 'text-blue-600');
+                tab.classList.remove('border-transparent', 'text-gray-500');
+                panels.forEach((panel) => {
+                    panel.classList.toggle('hidden', panel.id !== target);
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>

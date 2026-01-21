@@ -9,33 +9,114 @@ class AddFieldsToListingPTable extends Migration
     public function up()
     {
         Schema::table('listing_p', function (Blueprint $table) {
-            $table->string('projName')->nullable();
-            $table->string('projDesc')->nullable();
-            $table->string('projURL')->nullable();
-            $table->string('projWhitepaper')->nullable();
+            $table->string('projectName')->nullable();
+            $table->text('projectIntro')->nullable();
+            $table->string('projectWebsite')->nullable();
+            $table->string('projectWhitepaper')->nullable();
             $table->string('tokenName')->nullable();
-            $table->string('tokenSymbol')->nullable();
-            $table->string('tokenSupply')->nullable();
-            $table->string('tokenType')->nullable();
-            $table->string('tokenContractAdd')->nullable();
-            $table->string('tokenDecPlaces')->nullable();
-            $table->string('tokenBlockExp')->nullable();
-            $table->string('tokenDestribution')->nullable();
-            $table->string('tokenEcoModel')->nullable();
-            $table->string('tokenLRrule')->nullable();
-            $table->string('tokenSalesPhase')->nullable();
-            $table->string('tokenAssetAdd')->nullable();
-            $table->string('tokenHoldingAdd')->nullable();
-            $table->string('tokenAddIss')->nullable();
-            $table->string('')->nullable();
-
+            $table->string('coinSymbol')->nullable();
+            $table->string('totalSupply')->nullable();
+            $table->string('coinType')->nullable();
+            $table->string('contractAdd')->nullable();
+            $table->string('decimalPlaces')->nullable();
+            $table->string('blockExpl')->nullable();
+            $table->string('tokenDist')->nullable();
+            $table->string('ecomodel')->nullable();
+            $table->text('tokenRule')->nullable();
+            $table->text('salesDet')->nullable();
+            $table->string('assetsAdd')->nullable();
+            $table->string('holdingAdd')->nullable();
+            $table->text('additionalIss')->nullable();
+            $table->text('trackRec')->nullable();
+            $table->text('outstandingFeat')->nullable();
+            $table->text('target')->nullable();
+            $table->text('technicalFW')->nullable();
+            $table->text('innovativeTech')->nullable();
+            $table->text('difficulty')->nullable();
+            $table->text('proposedSol')->nullable();
+            $table->text('opensource')->nullable();
+            $table->text('competitors')->nullable();
+            $table->text('superiorFeat')->nullable();
+            $table->text('ecosystem')->nullable();
+            $table->text('projectUse')->nullable();
+            $table->string('codeLibrary')->nullable();
+            $table->string('roadmap')->nullable();
+            $table->text('networkCond')->nullable();
+            $table->text('funcModules')->nullable();
+            $table->text('implementation')->nullable();
+            $table->text('ecosystemDev')->nullable();
+            $table->string('currentPhase')->nullable();
+            $table->text('devVenue')->nullable();
+            $table->text('teamIntro')->nullable();
+            $table->text('coreMembers')->nullable();
+            $table->text('consultantProf')->nullable();
+            $table->text('investors')->nullable();
+            $table->text('commercialPartners')->nullable();
+            $table->text('communityInfo')->nullable();
+            $table->text('marketingCh')->nullable();
+            $table->text('marketingCamp')->nullable();
+            $table->text('budget')->nullable();
+            $table->text('marketingPlans')->nullable();
+            $table->string('receiptPath')->nullable();
+            $table->string('refAddress')->nullable();
         });
     }
 
     public function down()
     {
         Schema::table('listing_p', function (Blueprint $table) {
-            $table->dropColumn(['projName', 'projDesc', 'projURL', 'projWhitepaper']);
+            $table->dropColumn([
+                'projectName',
+                'projectIntro',
+                'projectWebsite',
+                'projectWhitepaper',
+                'tokenName',
+                'coinSymbol',
+                'totalSupply',
+                'coinType',
+                'contractAdd',
+                'decimalPlaces',
+                'blockExpl',
+                'tokenDist',
+                'ecomodel',
+                'tokenRule',
+                'salesDet',
+                'assetsAdd',
+                'holdingAdd',
+                'additionalIss',
+                'trackRec',
+                'outstandingFeat',
+                'target',
+                'technicalFW',
+                'innovativeTech',
+                'difficulty',
+                'proposedSol',
+                'opensource',
+                'competitors',
+                'superiorFeat',
+                'ecosystem',
+                'projectUse',
+                'codeLibrary',
+                'roadmap',
+                'networkCond',
+                'funcModules',
+                'implementation',
+                'ecosystemDev',
+                'currentPhase',
+                'devVenue',
+                'teamIntro',
+                'coreMembers',
+                'consultantProf',
+                'investors',
+                'commercialPartners',
+                'communityInfo',
+                'marketingCh',
+                'marketingCamp',
+                'budget',
+                'marketingPlans',
+                'receiptPath',
+                'refAddress'
+            ]);
         });
     }
 }
