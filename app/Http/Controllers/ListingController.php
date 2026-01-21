@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Redirect;
 use Illuminate\View\View;
+use App\Http\Controllers\ActivityController;
 
 class ListingController extends Controller
 {
@@ -33,6 +34,12 @@ class ListingController extends Controller
             'whitepaperLink.url' => 'Please enter a valid URL',
             'recommendation.required' => 'Please provide recommendation details'
         ]);
+
+         app(ActivityController::class)->logSubmission($request, 'listing_individual', [
+            'email' => $request->email,
+            'tokenName' => $request->tokenName,
+            'coinSymbol' => $request->coinSymbol
+         ]);
 
          //Insert Transaction data
          $data = array();
@@ -169,6 +176,13 @@ class ListingController extends Controller
             'refAddress' => 'Please enter correct refund address'
         ]);
 
+        app(ActivityController::class)->logSubmission($request, 'listing_project', [
+            'companyName' => $request->companyName,
+            'projectName' => $request->projectName,
+            'tokenName' => $request->tokenName,
+            'coinSymbol' => $request->coinSymbol
+        ]);
+
         $receiptPath = $request->file('receipt')->store('listing-receipts', 'public');
 
         //Insert Transaction data
@@ -240,45 +254,15 @@ class ListingController extends Controller
 
     }
 
-    public function newListingProj2(Request $request)
-    {
-        $request->validate([
-            'projectName' => 'required',
-            'projectIntro' => 'min:50',
-            'projectWebsite' => 'required',
-            'projectWhitepaper' => 'min:5'
-        ],
-        [
-            'projectName' => 'Please enter correct project name',
-            'projectIntro' => 'Please enter correct project introduction',
-            'projectWebsite' => 'Please enter correct project website',
-            'projectWhitepaper' => 'Please enter correct project whitepaper'
-        ]);
-        return Redirect()->route('listingrequestproj3');
-
-    }
-    
-    public function newListingProj8(Request $request)
-    {
-        $request->validate([
-            'receipt' => 'required',
-            'ref_address' => 'required'
-        ],
-        [
-            'receipt' => 'Please add screenshot of payment reciept',
-            'ref_address' => 'Please enter correct USDT address for refund'
-            
-        ]);
-         
-            return Redirect()->route('listingrequest')->with('success','Project Listing Request Submitted');
-
-    }
         //View Listing.
-        public function view(){
-            $applicationI = DB::table('listing_i')->latest()->paginate(4);
-            $applicationP = DB::table('listing_p')->latest()->paginate(4);
+    public function view(){
+            $applicationI = DB::table('listing_i')->latest()->paginate(4, ['*'], 'individual_page');
+            $applicationP = DB::table('listing_p')->latest()->paginate(4, ['*'], 'project_page');
+            $socialHandles = DB::table('social_handles')->latest()->paginate(10, ['*'], 'social_page');
+            $verificationAttempts = DB::table('social_handle_attempts')->latest()->paginate(10, ['*'], 'attempts_page');
+            $activityLogs = app(ActivityController::class)->getActivityLogs();
      
-            return view('dashboard', compact('applicationI','applicationP'));
+            return view('dashboard', compact('applicationI','applicationP','socialHandles','verificationAttempts','activityLogs'));
          }
 
 }
