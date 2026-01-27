@@ -56,15 +56,25 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             RELEASE=/home/${{ secrets.SSH_USER }}/releases/${{ github.run_id }}
+
+            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/framework/views
+            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/framework/cache
+            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/framework/sessions
+            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/logs
+            
             ln -nfs /home/${{ secrets.SSH_USER }}/shared/.env $RELEASE/.env
             ln -nfs /home/${{ secrets.SSH_USER }}/shared/storage $RELEASE/storage
+            
+            mkdir -p $RELEASE/bootstrap/cache
+            
             ln -nfs $RELEASE /home/${{ secrets.SSH_USER }}/current
-
+            
             cd /home/${{ secrets.SSH_USER }}/current
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+
 
       - name: Cleanup old releases (keep last 5)
         uses: appleboy/ssh-action@v1.0.3
