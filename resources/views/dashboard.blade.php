@@ -53,6 +53,7 @@
 
             <div id="applications-individual" class="application-panel w-full max-w-6xl border-0 border-blue-400 rounded-lg">
             <div class="mt-8 mb-4 text-center text-xl font-bold">Individual Applications</div>
+                <div id="ajax-individual" class="ajax-section">
                 <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
                     <thead class="bg-gray-50">
                         <tr>
@@ -90,6 +91,7 @@
                     </tbody>
                 </table>
                 {{ $applicationI->onEachSide(4)->links() }}
+                </div>
             </div>
         </div>
 
@@ -116,6 +118,7 @@
                     </nav>
                 </div>
 
+                <div id="ajax-project" class="ajax-section">
                 <div id="project-overview" class="project-panel">
                 <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
                     <thead class="bg-gray-50">
@@ -331,7 +334,13 @@
                                 {{ $applicationPs->projectName }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500">
-                                {{ $applicationPs->receiptPath }}
+                                @if($applicationPs->receiptPath)
+                                    <a class="text-blue-600 hover:text-blue-800" href="{{ asset('storage/' . $applicationPs->receiptPath) }}" target="_blank" rel="noopener">
+                                        View receipt
+                                    </a>
+                                @else
+                                    <span class="text-gray-400">No receipt</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500">
                                 {{ $applicationPs->refAddress }}
@@ -343,6 +352,7 @@
                 </div>
 
                 {{ $applicationP->onEachSide(4)->links() }}
+                </div>
         </div>  
 
         <div id="applications-social" class="application-panel hidden w-full max-w-6xl border-0 border-blue-400 rounded-lg">
@@ -403,6 +413,7 @@
                 </div>
             </form>
 
+            <div id="ajax-social-handles" class="ajax-section">
             <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
                 <thead class="bg-gray-50">
                     <tr>
@@ -450,6 +461,7 @@
                 </tbody>
             </table>
             {{ $socialHandles->onEachSide(2)->links() }}
+            </div>
 
         </div>
 
@@ -468,6 +480,7 @@
             </div>
 
             <div id="activity-log" class="activity-panel">
+            <div id="ajax-activity-logs" class="ajax-section">
             <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
                 <thead class="bg-gray-50">
                     <tr>
@@ -518,8 +531,10 @@
             </table>
             {{ $activityLogs->onEachSide(2)->links() }}
             </div>
+            </div>
 
             <div id="activity-verifications" class="activity-panel hidden">
+            <div id="ajax-verification-attempts" class="ajax-section">
             <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
                 <thead class="bg-gray-50">
                     <tr>
@@ -570,6 +585,7 @@
             </table>
             {{ $verificationAttempts->onEachSide(2)->links() }}
             </div>
+            </div>
         </div>
     </div>
 
@@ -591,39 +607,70 @@
             });
         });
 
-        const tabs = document.querySelectorAll('.project-tab');
-        const panels = document.querySelectorAll('.project-panel');
-        tabs.forEach((tab) => {
-            tab.addEventListener('click', () => {
-                const target = tab.getAttribute('data-tab');
-                tabs.forEach((btn) => {
-                    btn.classList.remove('border-blue-600', 'text-blue-600');
-                    btn.classList.add('border-transparent', 'text-gray-500');
-                });
-                tab.classList.add('border-blue-600', 'text-blue-600');
-                tab.classList.remove('border-transparent', 'text-gray-500');
-                panels.forEach((panel) => {
-                    panel.classList.toggle('hidden', panel.id !== target);
-                });
+        const switchTabs = (tabEl, tabSelector, panelSelector) => {
+            const target = tabEl.getAttribute('data-tab');
+            if (!target) {
+                return;
+            }
+            const tabs = Array.from(document.querySelectorAll(tabSelector));
+            const panels = Array.from(document.querySelectorAll(panelSelector));
+            tabs.forEach((btn) => {
+                btn.classList.remove('border-blue-600', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
             });
+            tabEl.classList.add('border-blue-600', 'text-blue-600');
+            tabEl.classList.remove('border-transparent', 'text-gray-500');
+            panels.forEach((panel) => {
+                panel.classList.toggle('hidden', panel.id !== target);
+            });
+        };
+
+        document.addEventListener('click', (event) => {
+            const projectTab = event.target.closest('.project-tab');
+            if (projectTab) {
+                switchTabs(projectTab, '.project-tab', '.project-panel');
+                return;
+            }
+            const activityTab = event.target.closest('.activity-tab');
+            if (activityTab) {
+                switchTabs(activityTab, '.activity-tab', '.activity-panel');
+            }
         });
 
-        const activityTabs = document.querySelectorAll('.activity-tab');
-        const activityPanels = document.querySelectorAll('.activity-panel');
-        activityTabs.forEach((tab) => {
-            tab.addEventListener('click', () => {
-                const target = tab.getAttribute('data-tab');
-                activityTabs.forEach((btn) => {
-                    btn.classList.remove('border-blue-600', 'text-blue-600');
-                    btn.classList.add('border-transparent', 'text-gray-500');
-                });
-                tab.classList.add('border-blue-600', 'text-blue-600');
-                tab.classList.remove('border-transparent', 'text-gray-500');
-                activityPanels.forEach((panel) => {
-                    panel.classList.toggle('hidden', panel.id !== target);
-                });
+        document.addEventListener('click', async (event) => {
+            const link = event.target.closest('a');
+            if (!link) {
+                return;
+            }
+            const pagination = link.closest('nav[aria-label*="Pagination"], nav[role="navigation"], .pagination');
+            if (!pagination) {
+                return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+            const section = link.closest('.ajax-section');
+            if (!section) {
+                window.location.href = link.href;
+                return;
+            }
+            const response = await fetch(link.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
-        });
+            if (!response.ok) {
+                window.location.href = link.href;
+                return;
+            }
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const replacement = doc.getElementById(section.id);
+            if (replacement) {
+                section.innerHTML = replacement.innerHTML;
+                history.replaceState(null, '', link.href);
+            }
+        }, true);
 
         const socialForm = document.getElementById('social-handle-form');
         const socialBody = document.getElementById('social-handles-body');

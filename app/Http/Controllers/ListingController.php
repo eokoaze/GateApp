@@ -246,11 +246,22 @@ class ListingController extends Controller
         $data['created_at'] = now();
         $data['updated_at'] = now();
          
-        if(DB::table('listing_p')->insert($data)){   
+        if (DB::table('listing_p')->insert($data)) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Project Listing Request Submitted'
+                ]);
+            }
             return Redirect()->route('listingrequest')->with('success','Project Listing Request Submitted');
-        }else{
-            return Redirect()->back()->with('success','Listing Request Failed to Submit');
         }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Listing Request Failed to Submit'
+            ], 500);
+        }
+
+        return Redirect()->back()->with('success','Listing Request Failed to Submit');
 
     }
 

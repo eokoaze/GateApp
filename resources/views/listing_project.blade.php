@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
     <link href="https://unpkg.com/@tailwindcss/custom-forms/dist/custom-forms.min.css" rel="stylesheet">
-     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         /* Custom scrollbar for visual appeal */
         ::-webkit-scrollbar { width: 8px; }
@@ -41,7 +41,8 @@
 
     <!-- The entire component is wrapped in x-data, managing the activeTab state -->
     <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-2xl"
-         x-data="{ activeTab: 'company' }">
+         x-data="listingForm"
+         x-init="init()">
 
         <p class="text-gray-600 mb-8">Please complete all the sections to finalize your application.</p>
         
@@ -57,9 +58,32 @@
             </div>
         </div>
         @endif
+        <div id="listing-success" class="hidden bg-white-300 flex p-4 m-10 gap-3 items-center justify-center rounded-2xl border border-blue-600 ">
+            <svg class="h-6 w-6 fill-current text-blue-600" viewBox="0 0 448 512">
+                <path
+                    d="M256 32V49.88C328.5 61.39 384 124.2 384 200V233.4C384 278.8 399.5 322.9 427.8 358.4L442.7 377C448.5 384.2 449.6 394.1 445.6 402.4C441.6 410.7 433.2 416 424 416H24C14.77 416 6.365 410.7 2.369 402.4C-1.628 394.1-.504 384.2 5.26 377L20.17 358.4C48.54 322.9 64 278.8 64 233.4V200C64 124.2 119.5 61.39 192 49.88V32C192 14.33 206.3 0 224 0C241.7 0 256 14.33 256 32V32zM216 96C158.6 96 112 142.6 112 200V233.4C112 281.3 98.12 328 72.31 368H375.7C349.9 328 336 281.3 336 233.4V200C336 142.6 289.4 96 232 96H216zM288 448C288 464.1 281.3 481.3 269.3 493.3C257.3 505.3 240.1 512 224 512C207 512 190.7 505.3 178.7 493.3C166.7 481.3 160 464.1 160 448H288z" />
+            </svg>
+            <div id="listing-success-text" class="ml-3 font-sans text-xs leading-6 text-blue-600"></div>
+        </div>
+        <div id="listing-error" class="hidden bg-white-300 flex p-4 m-10 gap-3 items-center justify-center rounded-2xl border border-red-600 ">
+            <svg class="h-6 w-6 fill-current text-red-600" viewBox="0 0 512 512">
+                <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 405.3c-13.3 0-24-10.7-24-24c0-13.3 10.7-24 24-24s24 10.7 24 24c0 13.3-10.7 24-24 24zM280 128l-6.6 160c-.3 7.9-6.8 14-14.7 14h-5.4c-7.9 0-14.4-6.1-14.7-14L232 128c-.3-8.2 6.3-15 14.7-15h18.6c8.4 0 15 6.8 14.7 15z"/>
+            </svg>
+            <div id="listing-error-text" class="ml-3 font-sans text-xs leading-6 text-red-600"></div>
+        </div>
+        @if($errors->any())
+        <div class="bg-white-300 flex p-4 m-10 gap-3 items-center justify-center rounded-2xl border border-red-600 ">
+            <svg class="h-6 w-6 fill-current text-red-600" viewBox="0 0 512 512">
+                <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 405.3c-13.3 0-24-10.7-24-24c0-13.3 10.7-24 24-24s24 10.7 24 24c0 13.3-10.7 24-24 24zM280 128l-6.6 160c-.3 7.9-6.8 14-14.7 14h-5.4c-7.9 0-14.4-6.1-14.7-14L232 128c-.3-8.2 6.3-15 14.7-15h18.6c8.4 0 15 6.8 14.7 15z"/>
+            </svg>
+            <div class="ml-3 font-sans text-xs leading-6 text-red-600">
+                Please fix the highlighted fields and try again.
+            </div>
+        </div>
+        @endif
 
         <!-- The ENTIRE form, including all tab contents, is wrapped in a single <form> tag -->
-        <form action="/newlisting_p" method="POST" enctype="multipart/form-data">
+        <form x-ref="listingForm" @submit.prevent="submitForm" action="/newlisting_p" method="POST" enctype="multipart/form-data">
             @csrf
             
             <!-- 1. TAB NAVIGATION (Nav-Tabs equivalent) -->
@@ -67,7 +91,7 @@
                 <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                     <!-- Tab 1: Company Profile -->
                     <button type="button" 
-                            @click="activeTab = 'company'"
+                            @click="goToTabFromNav('company')"
                             :class="activeTab === 'company' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Company
@@ -75,7 +99,7 @@
 
                     <!-- Tab 2: Basic Info -->
                     <button type="button"
-                            @click="activeTab = 'basic'"
+                            @click="goToTabFromNav('basic')"
                             :class="activeTab === 'basic' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Basic
@@ -83,7 +107,7 @@
 
                     <!-- Tab 3: Token Info -->
                     <button type="button"
-                            @click="activeTab = 'token'"
+                            @click="goToTabFromNav('token')"
                             :class="activeTab === 'token' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Token
@@ -91,7 +115,7 @@
 
                      <!-- Tab 4: Project Intro -->
                     <button type="button"
-                            @click="activeTab = 'project'"
+                            @click="goToTabFromNav('project')"
                             :class="activeTab === 'project' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Project
@@ -99,7 +123,7 @@
 
                      <!-- Tab 5: Project Dev -->
                     <button type="button"
-                            @click="activeTab = 'project-dev'"
+                            @click="goToTabFromNav('project-dev')"
                             :class="activeTab === 'project-dev' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Project Dev
@@ -107,7 +131,7 @@
 
                      <!-- Tab 6: Team Intro -->
                     <button type="button"
-                            @click="activeTab = 'team'"
+                            @click="goToTabFromNav('team')"
                             :class="activeTab === 'team' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Team
@@ -115,14 +139,14 @@
 
                      <!-- Tab 7: Business Marketing Plan-->
                     <button type="button"
-                            @click="activeTab = 'business'"
+                            @click="goToTabFromNav('business')"
                             :class="activeTab === 'business' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Business
                     </button>
                      <!-- Tab 8: Fee -->
                     <button type="button"
-                            @click="activeTab = 'fee'"
+                            @click="goToTabFromNav('fee')"
                             :class="activeTab === 'fee' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                             class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-200 rounded-t-lg">
                         Fee
@@ -134,7 +158,7 @@
             <div class="tab-content">
                 
                 <!-- Tab Pane 1: Company Profile -->
-                <div x-show="activeTab === 'company'" x-cloak>
+                <div x-show="activeTab === 'company'" x-cloak data-tab-panel="company">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Company Profile</h3>
                     
                     <div class="mb-4">
@@ -157,18 +181,18 @@
                         <label for="team_email" class="block text-sm font-medium text-gray-700 mb-1">Team's email</label>
                         <input type="email" name="teamEmail" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="e.g., abc@email.com">
                     </div>
-                    <p class="text-gray-800 mb-8">Please note, corporate documentation and an identity document of the representative will be required if it passes at the preliminary review.</p>
+                    <p class="text-gray-600 mb-8">Please note, corporate documentation and an identity document of the representative will be required if it passes at the preliminary review.</p>
 
                     <!-- Navigation within the form (Optional) -->
                     <div class="flex justify-end pt-4 border-t">
-                        <button type="button" @click="activeTab = 'basic'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="goToTab('basic', 'company')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Basic Information &rarr;
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Pane 2: Basic Project Information -->
-                <div x-show="activeTab === 'basic'" x-cloak>
+                <div x-show="activeTab === 'basic'" x-cloak data-tab-panel="basic">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Basic Project Information</h3>
 
                     <div class="mb-4">
@@ -193,14 +217,14 @@
                         <button type="button" @click="activeTab = 'company'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
                             &larr; Previous: Company Profile
                         </button>
-                        <button type="button" @click="activeTab = 'token'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="goToTab('token', 'basic')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Token Information &rarr;
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Pane 3: Token Information -->
-                <div x-show="activeTab === 'token'" x-cloak>
+                <div x-show="activeTab === 'token'" x-cloak data-tab-panel="token">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Token/Coin Information</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -279,14 +303,14 @@
                         <button type="button" @click="activeTab = 'basic'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
                             &larr; Previous: Basic Information
                         </button>
-                        <button type="button" @click="activeTab = 'project'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="goToTab('project', 'token')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Project Introduction &rarr;
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Pane 4: Project Introduction -->
-                <div x-show="activeTab === 'project'" x-cloak>
+                <div x-show="activeTab === 'project'" x-cloak data-tab-panel="project">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Project Introduction</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -355,14 +379,14 @@
                         <button type="button" @click="activeTab = 'token'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
                             &larr; Previous: Token Information
                         </button>
-                        <button type="button" @click="activeTab = 'project-dev'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="goToTab('project-dev', 'project')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Project Development &rarr;
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Pane 5: Project Development -->
-                <div x-show="activeTab === 'project-dev'" x-cloak>
+                <div x-show="activeTab === 'project-dev'" x-cloak data-tab-panel="project-dev">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Project Development</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -402,7 +426,7 @@
                         </div>
                         <div class="mb-4">
                             <label for="dev_venue" class="block text-sm font-medium text-gray-700 mb-1">Development Venue</label>
-                            <textarea name="devVenue" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide details of additional issuance and how you plan to execute it"></textarea>
+                            <textarea name="devVenue" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Provide details of the projects development site/set-up"></textarea>
                         </div>
                     </div>
 
@@ -411,14 +435,14 @@
                         <button type="button" @click="activeTab = 'project'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
                             &larr; Previous: Project Introduction
                         </button>
-                        <button type="button" @click="activeTab = 'team'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="goToTab('team', 'project-dev')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Team Introduction &rarr;
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Pane 6: Team Introduction -->
-                <div x-show="activeTab === 'team'" x-cloak>
+                <div x-show="activeTab === 'team'" x-cloak data-tab-panel="team">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Team Introduction</h3>
 
                     <div class="mb-4">
@@ -447,14 +471,14 @@
                         <button type="button" @click="activeTab = 'project-dev'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
                             &larr; Previous: Project Development
                         </button>
-                        <button type="button" @click="activeTab = 'business'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="goToTab('business', 'team')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Business Development Plan &rarr;
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Pane 7: Business Development Plan -->
-                <div x-show="activeTab === 'business'" x-cloak>
+                <div x-show="activeTab === 'business'" x-cloak data-tab-panel="business">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Business Marketing Plan</h3>
 
                     <div class="mb-4">
@@ -462,7 +486,7 @@
                         <textarea name="communityInfo" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="Give the brief detail about the project's community"></textarea>
                     </div>
                     <div class="mb-4">
-                        <label for="marketing_ch" class="block text-sm font-medium text-gray-700 mb-1">Markting Channel(s)</label>
+                        <label for="marketing_ch" class="block text-sm font-medium text-gray-700 mb-1">Marketing Channel(s)</label>
                         <textarea name="marketingCh" rows="2" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="What are your marketing channels currently?"></textarea>
                     </div>
                     <div class="mb-4">
@@ -483,37 +507,37 @@
                         <button type="button" @click="activeTab = 'team'" class="text-gray-600 hover:text-indigo-600 font-semibold py-2 px-4 rounded-lg transition duration-150">
                             &larr; Previous: Team Introduction
                         </button>
-                        <button type="button" @click="activeTab = 'fee'" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <button type="button" @click="goToTab('fee', 'business')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
                             Next: Evaluation/Review Fee &rarr;
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Pane 8: Evaluation/Review Fee -->
-                <div x-show="activeTab === 'fee'" x-cloak>
+                <div x-show="activeTab === 'fee'" x-cloak data-tab-panel="fee">
                     <h3 class="text-lg font-semibold mb-4 text-gray-700">Evaluation/Review Fee</h3>
 
                     <div class="mb-4">
-                        <p>
+                        <p class="text-gray-600 mb-8">
                             Our standard evaluation/review fee is 2,000 USDT, which covers the comprehensive assessment of your project by our expert team. 
                             This fee includes technical evaluation, market analysis, and strategic recommendations to enhance your project's potential for success. 
                             Please ensure that the payment is made prior to the submision of this application form.
                         </p>
-                        <p>
+                        <p class="text-gray-600 mb-8">
                             This fee is <b>refundable</b> if the project fails to advance from this stage. 
                             Projects that passes review move to the next phase of the pre-listing process. 
                             Please do not reapply (except for another project) if this project fails to advance from this stage.
                         </p>
                     </div>
                     <div class="mb-4">
-                        <p>
+                        <p class="text-gray-600 mb-8">
                             Please make the payment of 2,000 USDT to the following USDT address on <b>TRON (TRC-20) Network,</b> attach screenshot / receipt of payment below :
                             <br>
                             <b>TCGkeLkwQk935HxMkVxvf2d1gS7VJLU6sL</b>
                         </p>
                     </div>
                     <div class="mb-4">
-                        <span>Upload screenshot / receipt of payment</span>
+                        <span class="text-gray-600 mb-8">Upload screenshot / receipt of payment</span>
                         <input type="file" required name="receipt" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5" placeholder="*Please attach the payment reciept"/>
                     </div>
                     <div class="mb-4">
@@ -541,6 +565,196 @@
 
     </div>
     <!-- End of Alpine Data Scope -->
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('listingForm', () => ({
+                activeTab: 'company',
+                tabOrder: ['company', 'basic', 'token', 'project', 'project-dev', 'team', 'business', 'fee'],
+                init() {
+                    const fields = this.getAllFields();
+                    fields.forEach((field) => {
+                        field.required = true;
+                        field.addEventListener('input', () => this.validateField(field));
+                        field.addEventListener('blur', () => this.validateField(field));
+                        if (field.type === 'file') {
+                            field.addEventListener('change', () => this.validateField(field));
+                        }
+                    });
+                },
+                getAllFields() {
+                    const form = this.$refs.listingForm;
+                    if (!form) {
+                        return [];
+                    }
+                    return Array.from(form.querySelectorAll('input, textarea, select'))
+                        .filter((field) => field.name);
+                },
+                getTabFields(tab) {
+                    const form = this.$refs.listingForm;
+                    if (!form) {
+                        return [];
+                    }
+                    return Array.from(form.querySelectorAll('input, textarea, select'))
+                        .filter((field) => field.name)
+                        .filter((field) => field.closest('[data-tab-panel]')?.getAttribute('data-tab-panel') === tab);
+                },
+                validateField(field) {
+                    const isFile = field.type === 'file';
+                    const value = typeof field.value === 'string' ? field.value.trim() : field.value;
+                    const hasValue = isFile ? (field.files && field.files.length > 0) : value !== '';
+                    const isValid = field.checkValidity() && hasValue;
+                    const invalidClasses = ['border-red-500', 'ring-red-500'];
+                    if (!isValid) {
+                        field.classList.add(...invalidClasses);
+                    } else {
+                        field.classList.remove(...invalidClasses);
+                    }
+                    return isValid;
+                },
+                clearFieldErrors() {
+                    const fields = this.getAllFields();
+                    fields.forEach((field) => {
+                        field.classList.remove('border-red-500', 'ring-red-500');
+                        const existing = field.parentElement?.querySelector('.field-error');
+                        if (existing) {
+                            existing.remove();
+                        }
+                    });
+                },
+                applyServerErrors(errors) {
+                    const fields = this.getAllFields();
+                    const firstErrorKey = Object.keys(errors || {})[0];
+                    fields.forEach((field) => {
+                        if (errors && Object.prototype.hasOwnProperty.call(errors, field.name)) {
+                            field.classList.add('border-red-500', 'ring-red-500');
+                            const message = Array.isArray(errors[field.name]) ? errors[field.name][0] : errors[field.name];
+                            const existing = field.parentElement?.querySelector('.field-error');
+                            if (existing) {
+                                existing.textContent = message;
+                            } else if (field.parentElement) {
+                                const errorEl = document.createElement('div');
+                                errorEl.className = 'field-error text-red-500 text-xs mt-1';
+                                errorEl.textContent = message;
+                                field.parentElement.appendChild(errorEl);
+                            }
+                        }
+                    });
+                    if (firstErrorKey) {
+                        const firstField = fields.find((field) => field.name === firstErrorKey);
+                        if (firstField) {
+                            const tab = firstField.closest('[data-tab-panel]')?.getAttribute('data-tab-panel');
+                            if (tab) {
+                                this.activeTab = tab;
+                            }
+                            firstField.focus();
+                        }
+                    }
+                },
+                validateTab(tab) {
+                    const fields = this.getTabFields(tab);
+                    let firstInvalid = null;
+                    fields.forEach((field) => {
+                        const valid = this.validateField(field);
+                        if (!valid && !firstInvalid) {
+                            firstInvalid = field;
+                        }
+                    });
+                    if (firstInvalid) {
+                        this.activeTab = tab;
+                        firstInvalid.focus();
+                        firstInvalid.reportValidity();
+                        return false;
+                    }
+                    return true;
+                },
+                goToTab(nextTab, currentTab) {
+                    if (this.validateTab(currentTab)) {
+                        this.activeTab = nextTab;
+                    }
+                },
+                goToTabFromNav(targetTab) {
+                    const currentIndex = this.tabOrder.indexOf(this.activeTab);
+                    const targetIndex = this.tabOrder.indexOf(targetTab);
+                    if (targetIndex === -1) {
+                        return;
+                    }
+                    if (targetIndex <= currentIndex) {
+                        this.activeTab = targetTab;
+                        return;
+                    }
+                    for (let index = currentIndex; index < targetIndex; index++) {
+                        const tab = this.tabOrder[index];
+                        if (!this.validateTab(tab)) {
+                            return;
+                        }
+                    }
+                    this.activeTab = targetTab;
+                },
+                async submitForm() {
+                    for (const tab of this.tabOrder) {
+                        if (!this.validateTab(tab)) {
+                            return;
+                        }
+                    }
+                    const form = this.$refs.listingForm;
+                    const formData = new FormData(form);
+                    const token = form.querySelector('input[name="_token"]')?.value;
+                    const successBox = document.getElementById('listing-success');
+                    const successText = document.getElementById('listing-success-text');
+                    const errorBox = document.getElementById('listing-error');
+                    const errorText = document.getElementById('listing-error-text');
+                    successBox.classList.add('hidden');
+                    errorBox.classList.add('hidden');
+                    this.clearFieldErrors();
+
+                    let response;
+                    try {
+                        response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': token || '',
+                                'Accept': 'application/json'
+                            },
+                            body: formData
+                        });
+                    } catch (error) {
+                        errorText.textContent = 'Network error. Please try again.';
+                        errorBox.classList.remove('hidden');
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        let message = 'Please fix the highlighted fields and try again.';
+                        let errors = null;
+                        try {
+                            const payload = await response.json();
+                            if (payload?.message) {
+                                message = payload.message;
+                            }
+                            if (payload?.errors) {
+                                errors = payload.errors;
+                            }
+                        } catch (error) {
+                            // Ignore JSON parse errors.
+                        }
+                        errorText.textContent = message;
+                        errorBox.classList.remove('hidden');
+                        if (errors) {
+                            this.applyServerErrors(errors);
+                        }
+                        return;
+                    }
+
+                    const payload = await response.json();
+                    successText.textContent = payload?.message || 'Project Listing Request Submitted';
+                    successBox.classList.remove('hidden');
+                    form.reset();
+                    this.activeTab = 'company';
+                }
+            }));
+        });
+    </script>
       
 
 </body>
