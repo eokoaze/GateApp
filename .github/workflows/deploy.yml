@@ -40,12 +40,11 @@ jobs:
         with:
           switches: -avzr --delete --exclude='storage'
           path: .
-          remote_path: /home/${{ secrets.SSH_USER }}/releases/${{ github.run_id }}
+          remote_path: /home/${{ secrets.SSH_USER }}/gateglobal.io/releases/${{ github.run_id }}
           remote_host: ${{ secrets.SSH_HOST }}
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_KEY }}
           remote_port: ${{ secrets.SSH_PORT }}
-
 
       - name: Finalize release (symlinks + migrate)
         uses: appleboy/ssh-action@v1.0.3
@@ -55,26 +54,27 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            RELEASE=/home/${{ secrets.SSH_USER }}/releases/${{ github.run_id }}
+            BASE=/home/${{ secrets.SSH_USER }}/gateglobal.io
+            RELEASE=$BASE/releases/${{ github.run_id }}
 
-            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/framework/views
-            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/framework/cache
-            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/framework/sessions
-            mkdir -p /home/${{ secrets.SSH_USER }}/shared/storage/logs
-            
-            ln -nfs /home/${{ secrets.SSH_USER }}/shared/.env $RELEASE/.env
-            ln -nfs /home/${{ secrets.SSH_USER }}/shared/storage $RELEASE/storage
-            
+            mkdir -p $BASE/shared/storage/framework/views
+            mkdir -p $BASE/shared/storage/framework/cache
+            mkdir -p $BASE/shared/storage/framework/sessions
+            mkdir -p $BASE/shared/storage/logs
+
+            ln -nfs $BASE/shared/.env $RELEASE/.env
+            ln -nfs $BASE/shared/storage $RELEASE/storage
             mkdir -p $RELEASE/bootstrap/cache
-            
-            ln -nfs $RELEASE /home/${{ secrets.SSH_USER }}/current
-            
-            cd /home/${{ secrets.SSH_USER }}/current
+
+            ln -nfs $RELEASE $BASE/current
+            rm -rf $BASE/public_html/*
+            ln -s $BASE/current/public/* $BASE/public_html/
+
+            cd $BASE/current
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-
 
       - name: Cleanup old releases (keep last 5)
         uses: appleboy/ssh-action@v1.0.3
@@ -84,5 +84,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home/${{ secrets.SSH_USER }}/releases
-            ls -1dt */ | tail -n +4 | xargs -r rm -rf
+            cd /home/${{ secrets.SSH_USER }}/gateglobal.io/releases
+            ls -1dt */ | tail -n +6 | xargs -r rm -rf
