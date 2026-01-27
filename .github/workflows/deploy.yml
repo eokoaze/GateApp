@@ -1,4 +1,4 @@
-name: Deploy to Hostinger (Releases + Rollback)
+name: Deploy to Server
 
 on:
   push:
@@ -35,18 +35,18 @@ jobs:
           rm -rf node_modules
           rm -rf .git .github .env .env.example .env.prod
 
-      - name: Deploy release via rsync
+      - name: Deploy via rsync
         uses: burnett01/rsync-deployments@5.2
         with:
-          switches: -avzr --delete --exclude='storage'
+          switches: -avzr --delete --exclude='storage' --exclude='.env'
           path: .
-          remote_path: /home/${{ secrets.SSH_USER }}/gateglobal.io/releases/${{ github.run_id }}
+          remote_path: /home/${{ secrets.SSH_USER }}/gateglobal.io/public_html
           remote_host: ${{ secrets.SSH_HOST }}
           remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_KEY }}
           remote_port: ${{ secrets.SSH_PORT }}
 
-      - name: Finalize release (symlinks + migrate)
+      - name: Post-deploy (artisan)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -54,35 +54,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            BASE=/home/${{ secrets.SSH_USER }}/gateglobal.io
-            RELEASE=$BASE/releases/${{ github.run_id }}
-
-            mkdir -p $BASE/shared/storage/framework/views
-            mkdir -p $BASE/shared/storage/framework/cache
-            mkdir -p $BASE/shared/storage/framework/sessions
-            mkdir -p $BASE/shared/storage/logs
-
-            ln -nfs $BASE/shared/.env $RELEASE/.env
-            ln -nfs $BASE/shared/storage $RELEASE/storage
-            mkdir -p $RELEASE/bootstrap/cache
-
-            ln -nfs $RELEASE $BASE/current
-            rm -rf $BASE/public_html/*
-            ln -s $BASE/current/public/* $BASE/public_html/
-
-            cd $BASE/current
+            cd /home/${{ secrets.SSH_USER }}/gateglobal.io/public_html
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-
-      - name: Cleanup old releases (keep last 5)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd /home/${{ secrets.SSH_USER }}/gateglobal.io/releases
-            ls -1dt */ | tail -n +6 | xargs -r rm -rf
