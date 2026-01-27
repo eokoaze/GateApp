@@ -54,7 +54,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home/${{ secrets.SSH_USER }}/gateglobal.io/public_html
+            cd /home/${{ secrets.SSH_USER }}/domains/gateglobal.io/public_html
             mkdir -p storage/framework/views
             mkdir -p storage/framework/cache
             mkdir -p storage/framework/sessions
