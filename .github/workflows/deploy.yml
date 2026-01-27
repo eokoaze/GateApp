@@ -55,6 +55,11 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/${{ secrets.SSH_USER }}/gateglobal.io/public_html
+            mkdir -p storage/framework/views
+            mkdir -p storage/framework/cache
+            mkdir -p storage/framework/sessions
+            mkdir -p storage/logs
+            
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
